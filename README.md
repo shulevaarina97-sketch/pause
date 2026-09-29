@@ -16,7 +16,7 @@ Pause is a tiny menu bar app for macOS and Windows. Every 30–60 minutes, a 5-s
 | System | File |
 |---|---|
 | macOS (Apple Silicon, M1 and newer) | `Pause-0.1.0-arm64.dmg` |
-| Windows 10/11 (x64) | `Pause-Setup-0.1.0.exe` |
+| Windows 10/11 (x64) | `Pause.Setup.0.1.0.exe` |
 
 ## First launch
 
