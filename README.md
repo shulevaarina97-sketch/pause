@@ -2,7 +2,7 @@
 
 **Come back to your body.**
 
-Pause is a tiny menu bar app for macOS and Windows. Every 30–60 minutes, a 5-second cue floats over any app — *Drop your shoulders*, *Unclench your jaw*, *Take a long, slow exhale* — then fades. No clicks.
+Pause is a tiny menu bar app for macOS. Every 30–60 minutes, a 5-second cue floats over any app — *Drop your shoulders*, *Unclench your jaw*, *Take a long, slow exhale* — then fades. No clicks.
 
 - Never steals focus: your cursor stays where it was.
 - Clicks pass right through the reminder.
@@ -16,14 +16,11 @@ Pause is a tiny menu bar app for macOS and Windows. Every 30–60 minutes, a 5-s
 | System | File |
 |---|---|
 | macOS (Apple Silicon, M1 and newer) | `Pause-mac.dmg` |
-| Windows 10/11 (x64) | `Pause-windows.exe` |
 
 ## First launch
 
-Pause isn't code-signed yet, so your system will warn you the first time.
+Pause isn't code-signed yet, so macOS will warn you the first time.
 
 **macOS:** open the `.dmg` and drag Pause to Applications. On first launch macOS says it can't verify the developer — open **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once.
 
-**Windows:** if SmartScreen shows "Windows protected your PC", click **More info → Run anyway**.
-
-After that, Pause lives in the menu bar (macOS) or system tray (Windows). Pick an interval and press **Start**.
+After that, Pause lives in the menu bar. Pick an interval and press **Start**.
