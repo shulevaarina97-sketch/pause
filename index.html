@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pause — come back to your body</title>
+  <meta name="description" content="A tiny menu bar app for macOS and Windows. Every 30–60 minutes, a 5-second cue floats over any app, then fades. No clicks.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pause — come back to your body">
+  <meta property="og:description" content="A 5-second cue over any app, every 30–60 minutes. Free for macOS & Windows.">
+  <meta property="og:url" content="https://shulevaarina97-sketch.github.io/pause/">
+  <meta property="og:image" content="https://shulevaarina97-sketch.github.io/pause/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <style>
+    @font-face {
+      font-family: "Manrope"; font-weight: 200 800; font-display: swap;
+      src: url("assets/fonts/manrope-latin-wght-normal.woff2") format("woff2-variations");
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    @font-face {
+      font-family: "Manrope"; font-weight: 200 800; font-display: swap;
+      src: url("assets/fonts/manrope-cyrillic-wght-normal.woff2") format("woff2-variations");
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+
+    /* Те же токены, что в приложении: почти чёрный фон, белый разной силы, мягкое свечение. */
+    :root {
+      --bg: #050506;
+      --fg: #f5f5f6;
+      --fg-muted: rgba(245, 245, 246, 0.62);
+      --fg-faint: rgba(245, 245, 246, 0.42);
+      --fill-1: rgba(255, 255, 255, 0.05);
+      --fill-2: rgba(255, 255, 255, 0.09);
+      --fill-3: rgba(255, 255, 255, 0.16);
+      --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      --mono: "SF Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); color-scheme: dark; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--fg); font-family: var(--font);
+      background: radial-gradient(ellipse at 50% 0%, #19191c 0%, var(--bg) 60%);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+
+    .page {
+      max-width: 1080px; margin: 0 auto; padding: 56px 24px 48px;
+      display: grid; grid-template-columns: 1fr 380px; gap: 72px; align-items: center;
+      min-height: 100vh;
+    }
+
+    .icon { width: 88px; height: 88px; border-radius: 22px; box-shadow: 0 0 40px rgba(255, 255, 255, 0.14); }
+    .eyebrow { font: 400 12px/1 var(--mono); letter-spacing: 0.32em; color: var(--fg-muted); margin: 36px 0 22px; }
+    h1 { font-weight: 200; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spacing: -0.035em; margin: 0; }
+    h1 .lead { color: var(--fg-muted); }
+    h1 em { font-style: normal; font-weight: 400; }
+    .sub { font-size: 18px; line-height: 1.55; color: var(--fg-muted); margin: 24px 0 0; max-width: 34em; }
+    .sub b { color: var(--fg); font-weight: 500; }
+
+    .downloads { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 28px;
+      border-radius: 999px; text-decoration: none; font: 500 16px/1 var(--font);
+      background: var(--fill-2); color: var(--fg);
+      transition: background 200ms var(--ease), box-shadow 200ms var(--ease), transform 200ms var(--ease);
+    }
+    .btn:hover { background: var(--fill-3); box-shadow: 0 0 22px rgba(255, 255, 255, 0.12); }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+    .btn.primary { background: var(--fg); color: #0a0a0b; box-shadow: 0 0 28px rgba(255, 255, 255, 0.22); }
+    .btn.primary:hover { background: #fff; }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn small { font: 400 12px/1 var(--mono); opacity: 0.6; }
+
+    .meta { font: 400 12px/1.7 var(--mono); color: var(--fg-faint); margin: 18px 0 0; }
+
+    .first {
+      margin-top: 44px; padding: 22px 24px; border-radius: 20px; background: var(--fill-1);
+      font-size: 14px; line-height: 1.6; color: var(--fg-muted); max-width: 34em;
+    }
+    .first p { margin: 0; }
+    .first p + p { margin-top: 10px; }
+    .first .label { font: 400 11px/1 var(--mono); letter-spacing: 0.14em; color: var(--fg-faint); margin-bottom: 12px; }
+    .first b { color: var(--fg); font-weight: 500; }
+
+    .media { position: relative; }
+    .media video {
+      display: block; width: 100%; aspect-ratio: 1080 / 1350; border-radius: 28px; background: #0b0b0c;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 60px rgba(255, 255, 255, 0.06), 0 40px 80px -30px rgba(0, 0, 0, 0.9);
+    }
+
+    footer { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 12px/1.6 var(--mono); color: var(--fg-faint); }
+    footer a { color: var(--fg-muted); text-decoration: none; }
+    footer a:hover { color: var(--fg); }
+
+    @media (max-width: 860px) {
+      .page { grid-template-columns: 1fr; gap: 48px; padding-top: 40px; min-height: 0; }
+      .media { max-width: 420px; width: 100%; margin: 0 auto; }
+      .btn { flex: 1 1 100%; justify-content: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section>
+      <img class="icon" src="assets/icon.png" alt="Pause app icon" width="88" height="88">
+      <p class="eyebrow">[ PAUSE ]</p>
+      <h1><span class="lead">Come back to</span><br><em>your body.</em></h1>
+      <p class="sub">A tiny menu bar app. Every <b>30–60 minutes</b>, a <b>5-second cue</b> floats over any app — <i>drop your shoulders, unclench your jaw, take a long exhale</i> — then fades. No clicks, never steals focus.</p>
+
+      <div class="downloads" id="downloads">
+        <a class="btn" id="mac" href="https://github.com/shulevaarina97-sketch/pause/releases/latest/download/Pause-mac.dmg">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76-1.48.02-2.85.86-3.61 2.19-1.54 2.67-.39 6.62 1.11 8.79.73 1.06 1.61 2.25 2.75 2.2 1.1-.04 1.52-.71 2.86-.71 1.33 0 1.71.71 2.88.69 1.19-.02 1.94-1.08 2.66-2.14.84-1.23 1.19-2.42 1.21-2.48-.03-.01-2.32-.89-2.33-3.55zM14.18 6.13c.61-.74 1.02-1.76.91-2.78-.88.04-1.94.59-2.57 1.32-.56.65-1.06 1.7-.93 2.7.98.08 1.98-.5 2.59-1.24z"/></svg>
+          Download for Mac <small>Apple Silicon</small>
+        </a>
+        <a class="btn" id="win" href="https://github.com/shulevaarina97-sketch/pause/releases/latest/download/Pause-windows.exe">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5l7.4-1v7.1H3V5.5zm0 13l7.4 1v-7H3v6zm8.3 1.1L21 21v-8.4h-9.7v7zm0-15.2v7.2H21V3l-9.7 1.4z"/></svg>
+          Download for Windows <small>x64</small>
+        </a>
+      </div>
+      <p class="meta"><span id="version">Free</span> · macOS 12+ on M1 or newer · Windows 10/11</p>
+
+      <div class="first">
+        <p class="label">FIRST LAUNCH</p>
+        <p>Pause isn't code-signed yet, so your system asks once.</p>
+        <p><b>Mac:</b> drag Pause to Applications and open it. If macOS says it can't verify the developer, go to <b>System Settings → Privacy &amp; Security</b> and click <b>Open Anyway</b>.</p>
+        <p><b>Windows:</b> if you see "Windows protected your PC", click <b>More info → Run anyway</b>.</p>
+      </div>
+    </section>
+
+    <div class="media">
+      <video src="assets/pause.mp4" poster="assets/poster.jpg" autoplay muted loop playsinline aria-label="Pause in action: a reminder floats over a work app, then a box-breathing session"></video>
+    </div>
+
+    <footer>
+      <span>Pause · made with care for focused people</span>
+      <a href="https://github.com/shulevaarina97-sketch/pause/releases">All versions</a>
+    </footer>
+  </main>
+
+  <script>
+    // Кнопку для системы посетителя делаем основной и ставим первой.
+    (function () {
+      var ua = navigator.userAgent;
+      var isWin = /Windows/i.test(ua);
+      var isMac = /Macintosh|Mac OS X/i.test(ua) && !/iPhone|iPad/i.test(ua);
+      var primary = isWin ? 'win' : isMac ? 'mac' : null;
+      if (!primary) return;
+      var el = document.getElementById(primary);
+      el.classList.add('primary');
+      el.parentNode.insertBefore(el, el.parentNode.firstChild);
+    })();
+
+    // Номер последней версии — из GitHub; без сети остаётся «Free».
+    fetch('https://api.github.com/repos/shulevaarina97-sketch/pause/releases/latest')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rel) { if (rel && rel.tag_name) document.getElementById('version').textContent = 'Free · ' + rel.tag_name; })
+      .catch(function () {});
+  </script>
+</body>
+</html>
